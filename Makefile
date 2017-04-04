@@ -1,6 +1,8 @@
 PROJECT = abci_counter
-PROJECT_DESCRIPTION = New project
+PROJECT_DESCRIPTION = An example counter application for ABCI
 PROJECT_VERSION = 0.1.0
+
+DEPS = abci_server
 
 # Whitespace to be used when creating files from templates.
 SP = 4

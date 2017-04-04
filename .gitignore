@@ -1,0 +1,11 @@
+.eunit
+deps
+*.o
+*.beam
+*.plt
+erl_crash.dump
+ebin/
+*.d
+doc/*
+!doc/overview.edoc
+_rel/

@@ -8,5 +8,10 @@ start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
-    Procs = [],
-    {ok, {{one_for_one, 1, 5}, Procs}}.
+    Procs =
+        [#{id => counter,
+           start => {abci_counter, start_link, []}},
+         #{id => abci_server,
+           start => {abci_server_sup, start_link, [{abci_counter, 46658}]},
+           type => supervisor}],
+    {ok, {{one_for_all, 1, 5}, Procs}}.
