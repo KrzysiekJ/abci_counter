@@ -70,9 +70,6 @@ handle_request(#'RequestInfo'{}, State=#state{chain_height=Height, chain_state=C
         last_block_height=Height,
         last_block_app_hash=encode_chain_state(Counter)},
      State};
-handle_request(#'RequestFlush'{}, State) ->
-    {#'ResponseFlush'{},
-     State};
 handle_request(#'RequestBeginBlock'{}, State) ->
     {#'ResponseBeginBlock'{},
      State};
@@ -131,7 +128,4 @@ handle_request(#'RequestQuery'{path=Path},
                    log= "Invalid query path."}
         end,
     {Response,
-     State};
-handle_request(#'RequestEcho'{message=Message}, State) ->
-    {#'ResponseEcho'{message=Message},
      State}.
