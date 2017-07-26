@@ -79,6 +79,10 @@ handle_request(#'RequestEndBlock'{}, State) ->
 handle_request(#'RequestInitChain'{}, State) ->
     {#'ResponseInitChain'{},
      State};
+%% This counter implementation actually works only in serial mode, so we don’t support other values than “on”.
+handle_request(#'RequestSetOption'{key="serial", value="on"}, State) ->
+    {#'ResponseSetOption'{},
+     State};
 handle_request(#'RequestCommit'{},
                State=#state{chain_height=Height, chain_state=ChainState}) ->
     NewHeight = Height + 1,
