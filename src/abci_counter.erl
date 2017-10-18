@@ -62,7 +62,7 @@ encode_chain_state(0) ->
     %% Special case to make it compliant with ABCI’s implementation and allow not changing genesis.json after running `tendermint init'.
     <<>>;
 encode_chain_state(Counter) ->
-    binary:encode_unsigned(Counter).
+    <<Counter:8/big-integer-unit:8>>.
 
 handle_request(#'RequestInfo'{}, State=#state{chain_height=Height, chain_state=Counter}) ->
     {#'ResponseInfo'{
@@ -91,10 +91,9 @@ handle_request(#'RequestCommit'{},
         data=encode_chain_state(ChainState)},
      State#state{chain_height=NewHeight}};
 handle_request(#'RequestDeliverTx'{tx=Tx}, State=#state{chain_state=Counter}) ->
-    CounterBin = binary:encode_unsigned(Counter),
     {Code, NewCounter} =
-        case Tx of
-            CounterBin ->
+        case binary:decode_unsigned(Tx) of
+            Counter ->
                 {'OK', Counter + 1};
             _ ->
                 {'BadNonce', Counter}
@@ -104,7 +103,7 @@ handle_request(#'RequestDeliverTx'{tx=Tx}, State=#state{chain_state=Counter}) ->
      State#state{chain_state=NewCounter}};
 handle_request(#'RequestCheckTx'{tx=Tx}, State=#state{chain_state=Counter}) ->
     Code =
-        case Tx >= Counter of
+        case binary:decode_unsigned(Tx) >= Counter of
             true ->
                 'OK';
             _ ->
